@@ -39,7 +39,7 @@ const toMarkdownExtension: Options = {
 // biome-ignore lint/suspicious/noExplicitAny: peek requires assignment as a property
 (toMarkdownExtension.handlers as any).literalChar.peek = (node: LiteralChar) => node.value;
 
-const remarkDisableBracketEscape: Plugin<[], import("mdast").Root> = function (this: Processor) {
+const remarkDisableTextEscape: Plugin<[], import("mdast").Root> = function (this: Processor) {
 	const data = this.data();
 	if (!data.toMarkdownExtensions) {
 		data.toMarkdownExtensions = [];
@@ -69,4 +69,4 @@ const remarkDisableBracketEscape: Plugin<[], import("mdast").Root> = function (t
 	};
 };
 
-export default remarkDisableBracketEscape;
+export default remarkDisableTextEscape;

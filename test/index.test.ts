@@ -1,12 +1,12 @@
 import { remark } from "remark";
 import { describe, expect, it } from "vitest";
-import remarkDisableBracketEscape from "../src/index.js";
+import remarkDisableTextEscape from "../src/index.js";
 
 function process(input: string): string {
-	return remark().use(remarkDisableBracketEscape).processSync(input).toString().trim();
+	return remark().use(remarkDisableTextEscape).processSync(input).toString().trim();
 }
 
-describe("remark-disable-bracket-escape", () => {
+describe("remark-disable-text-escape", () => {
 	it("should preserve brackets without escaping", () => {
 		expect(process("[text]")).toBe("[text]");
 	});

@@ -1,8 +1,8 @@
-# remark-disable-bracket-escape
+# remark-disable-text-escape
 
-[![npm version](https://img.shields.io/npm/v/remark-disable-bracket-escape.svg)](https://www.npmjs.com/package/remark-disable-bracket-escape)
-[![npm downloads](https://img.shields.io/npm/dm/remark-disable-bracket-escape.svg)](https://www.npmjs.com/package/remark-disable-bracket-escape)
-[![license](https://img.shields.io/npm/l/remark-disable-bracket-escape.svg)](https://github.com/erutobusiness/remark-disable-bracket-escape/blob/main/LICENSE)
+[![npm version](https://img.shields.io/npm/v/remark-disable-text-escape.svg)](https://www.npmjs.com/package/remark-disable-text-escape)
+[![npm downloads](https://img.shields.io/npm/dm/remark-disable-text-escape.svg)](https://www.npmjs.com/package/remark-disable-text-escape)
+[![license](https://img.shields.io/npm/l/remark-disable-text-escape.svg)](https://github.com/erutobusiness/remark-disable-text-escape/blob/main/LICENSE)
 
 A [remark](https://github.com/remarkjs/remark) plugin to prevent square brackets (`[`) and asterisks (`*`) from being escaped by [remark-stringify](https://github.com/remarkjs/remark/tree/main/packages/remark-stringify).
 
@@ -19,17 +19,17 @@ This plugin uses the **Custom Node Pattern** — it transforms `[` and `*` chara
 This package is [ESM only](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c). Node.js 16+ is required.
 
 ```bash
-npm install remark-disable-bracket-escape
+npm install remark-disable-text-escape
 ```
 
 ## Usage
 
 ```js
 import { remark } from "remark";
-import remarkDisableBracketEscape from "remark-disable-bracket-escape";
+import remarkDisableTextEscape from "remark-disable-text-escape";
 
 const result = await remark()
-  .use(remarkDisableBracketEscape)
+  .use(remarkDisableTextEscape)
   .process("some text with [brackets]");
 
 console.log(String(result));
@@ -40,7 +40,7 @@ Asterisks are also preserved:
 
 ```js
 const result = await remark()
-  .use(remarkDisableBracketEscape)
+  .use(remarkDisableTextEscape)
   .process("**強調**はエスケープされません");
 
 console.log(String(result));
@@ -49,7 +49,7 @@ console.log(String(result));
 
 ## API
 
-### `remarkDisableBracketEscape`
+### `remarkDisableTextEscape`
 
 Plugin — no options. Add it to your remark pipeline and all `[` and `*` characters in text nodes will be preserved as-is in the output.
 
@@ -59,7 +59,7 @@ This package is written in TypeScript and ships with type definitions.
 It exports the `LiteralChar` type, which represents the custom AST node used internally.
 
 ```ts
-import type { LiteralChar } from "remark-disable-bracket-escape";
+import type { LiteralChar } from "remark-disable-text-escape";
 ```
 
 ## Compatibility
