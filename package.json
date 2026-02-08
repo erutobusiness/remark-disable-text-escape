@@ -1,7 +1,7 @@
 {
 	"name": "remark-disable-bracket-escape",
 	"version": "1.0.0",
-	"description": "A Remark plugin to prevent square brackets from being escaped by remark-stringify",
+	"description": "A Remark plugin to prevent square brackets and asterisks from being escaped by remark-stringify",
 	"type": "module",
 	"exports": "./dist/index.js",
 	"types": "./dist/index.d.ts",

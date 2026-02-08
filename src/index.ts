@@ -5,39 +5,39 @@ import type { Plugin, Processor } from "unified";
 import { SKIP, visit } from "unist-util-visit";
 
 /**
- * A custom node representing a literal `[` character.
+ * A custom node representing a literal `[` or `*` character.
  * By using a custom node type, we bypass remark-stringify's text escaping.
  */
-export interface BracketLiteral extends Literal {
-	type: "bracketLiteral";
-	value: "[";
+export interface LiteralChar extends Literal {
+	type: "literalChar";
+	value: "[" | "*";
 }
 
 declare module "mdast" {
 	interface PhrasingContentMap {
-		bracketLiteral: BracketLiteral;
+		literalChar: LiteralChar;
 	}
 	interface RootContentMap {
-		bracketLiteral: BracketLiteral;
+		literalChar: LiteralChar;
 	}
 }
 
 declare module "mdast-util-to-markdown" {
 	interface ConstructNameMap {
-		bracketLiteral: "bracketLiteral";
+		literalChar: "literalChar";
 	}
 }
 
 const toMarkdownExtension: Options = {
 	handlers: {
-		bracketLiteral() {
-			return "[";
+		literalChar(node: LiteralChar) {
+			return node.value;
 		},
 	},
 };
 
 // biome-ignore lint/suspicious/noExplicitAny: peek requires assignment as a property
-(toMarkdownExtension.handlers as any).bracketLiteral.peek = () => "[";
+(toMarkdownExtension.handlers as any).literalChar.peek = (node: LiteralChar) => node.value;
 
 const remarkDisableBracketEscape: Plugin<[], import("mdast").Root> = function (this: Processor) {
 	const data = this.data();
@@ -50,17 +50,16 @@ const remarkDisableBracketEscape: Plugin<[], import("mdast").Root> = function (t
 	return (tree) => {
 		visit(tree, "text", (node, index, parent) => {
 			if (index === undefined || parent === undefined) return;
-			if (!node.value.includes("[")) return;
+			if (!/[\[*]/.test(node.value)) return;
 
-			const parts = node.value.split("[");
+			const parts = node.value.split(/(\[|\*)/);
 			const newNodes: Node[] = [];
 
-			for (let i = 0; i < parts.length; i++) {
-				if (parts[i].length > 0) {
-					newNodes.push({ type: "text", value: parts[i] } as Node);
-				}
-				if (i < parts.length - 1) {
-					newNodes.push({ type: "bracketLiteral", value: "[" } as Node);
+			for (const part of parts) {
+				if (part === "[" || part === "*") {
+					newNodes.push({ type: "literalChar", value: part } as Node);
+				} else if (part.length > 0) {
+					newNodes.push({ type: "text", value: part } as Node);
 				}
 			}
 

@@ -30,4 +30,20 @@ describe("remark-disable-bracket-escape", () => {
 	it("should handle brackets at start and end", () => {
 		expect(process("[start and end]")).toBe("[start and end]");
 	});
+
+	it("should preserve asterisks in bold syntax", () => {
+		expect(process("text**bold**text")).toBe("text**bold**text");
+	});
+
+	it("should preserve asterisks in bold with Japanese text", () => {
+		expect(process("を**強調**する")).toBe("を**強調**する");
+	});
+
+	it("should preserve asterisks in italic syntax", () => {
+		expect(process("*italic*")).toBe("*italic*");
+	});
+
+	it("should handle mixed brackets and asterisks", () => {
+		expect(process("[link] and **bold**")).toBe("[link] and **bold**");
+	});
 });
