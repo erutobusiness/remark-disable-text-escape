@@ -4,15 +4,15 @@
 [![npm downloads](https://img.shields.io/npm/dm/remark-disable-text-escape.svg)](https://www.npmjs.com/package/remark-disable-text-escape)
 [![license](https://img.shields.io/npm/l/remark-disable-text-escape.svg)](https://github.com/erutobusiness/remark-disable-text-escape/blob/main/LICENSE)
 
-A [remark](https://github.com/remarkjs/remark) plugin to prevent square brackets (`[`) and asterisks (`*`) from being escaped by [remark-stringify](https://github.com/remarkjs/remark/tree/main/packages/remark-stringify).
+A [remark](https://github.com/remarkjs/remark) plugin to prevent square brackets (`[`), asterisks (`*`), and underscores (`_`) from being escaped by [remark-stringify](https://github.com/remarkjs/remark/tree/main/packages/remark-stringify).
 
 ## Problem
 
-By default, `remark-stringify` escapes `[` characters in text nodes to `\[` to avoid ambiguity with link syntax, and `*` characters to `\*` to avoid ambiguity with emphasis syntax. This can be undesirable when you want to preserve literal brackets and asterisks in your Markdown output (e.g., `**強調**` becoming `\*\*強調\*\*` in Japanese text).
+By default, `remark-stringify` escapes `[` characters in text nodes to `\[` to avoid ambiguity with link syntax, `*` characters to `\*` to avoid ambiguity with emphasis syntax, and `_` characters to `\_` to avoid ambiguity with emphasis syntax. This can be undesirable when you want to preserve literal brackets, asterisks, and underscores in your Markdown output (e.g., `**強調**` becoming `\*\*強調\*\*` or `foo_bar_baz` becoming `foo\_bar\_baz`).
 
 ## How it works
 
-This plugin uses the **Custom Node Pattern** — it transforms `[` and `*` characters in text nodes into custom `literalChar` AST nodes with a dedicated serialization handler. Since `mdast-util-to-markdown` only escapes characters inside `text` nodes, moving them into a custom node bypasses the escaping logic entirely.
+This plugin uses the **Custom Node Pattern** — it transforms `[`, `*`, and `_` characters in text nodes into custom `literalChar` AST nodes with a dedicated serialization handler. Since `mdast-util-to-markdown` only escapes characters inside `text` nodes, moving them into a custom node bypasses the escaping logic entirely.
 
 ## Install
 
@@ -51,7 +51,7 @@ console.log(String(result));
 
 ### `remarkDisableTextEscape`
 
-Plugin — no options. Add it to your remark pipeline and all `[` and `*` characters in text nodes will be preserved as-is in the output.
+Plugin — no options. Add it to your remark pipeline and all `[`, `*`, and `_` characters in text nodes will be preserved as-is in the output.
 
 ## Types
 
@@ -70,8 +70,8 @@ import type { LiteralChar } from "remark-disable-text-escape";
 
 ## Caveats
 
-This plugin disables escaping of `[` and `*` in **all** text nodes.
-If the output Markdown is later re-parsed, unescaped brackets or asterisks may be interpreted as link/image or emphasis syntax, changing the document semantics.
+This plugin disables escaping of `[`, `*`, and `_` in **all** text nodes.
+If the output Markdown is later re-parsed, unescaped brackets, asterisks, or underscores may be interpreted as link/image or emphasis syntax, changing the document semantics.
 Use this plugin only when you control the final output and do not expect round-trip fidelity.
 
 ## License

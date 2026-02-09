@@ -46,4 +46,16 @@ describe("remark-disable-text-escape", () => {
 	it("should handle mixed brackets and asterisks", () => {
 		expect(process("[link] and **bold**")).toBe("[link] and **bold**");
 	});
+
+	it("should not escape underscores in identifiers", () => {
+		expect(process("foo_bar_baz")).toBe("foo_bar_baz");
+	});
+
+	it("should not escape underscores around text", () => {
+		expect(process("a _ b _ c")).toBe("a _ b _ c");
+	});
+
+	it("should handle mixed underscores, brackets, and asterisks", () => {
+		expect(process("[link] and **bold** and foo_bar_baz")).toBe("[link] and **bold** and foo_bar_baz");
+	});
 });

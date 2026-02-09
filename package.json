@@ -1,7 +1,7 @@
 {
 	"name": "remark-disable-text-escape",
-	"version": "1.0.0",
-	"description": "A Remark plugin to prevent square brackets and asterisks from being escaped by remark-stringify",
+	"version": "1.1.0",
+	"description": "A Remark plugin to prevent square brackets, asterisks, and underscores from being escaped by remark-stringify",
 	"type": "module",
 	"exports": "./dist/index.js",
 	"types": "./dist/index.d.ts",
@@ -12,7 +12,7 @@
 		"lint": "node node_modules/@biomejs/biome/bin/biome check",
 		"prepublishOnly": "npm run build"
 	},
-	"keywords": ["remark", "remark-plugin", "markdown", "bracket", "asterisk", "escape", "unified"],
+	"keywords": ["remark", "remark-plugin", "markdown", "bracket", "asterisk", "underscore", "escape", "unified"],
 	"license": "MIT",
 	"dependencies": {
 		"unist-util-visit": "^5.0.0"

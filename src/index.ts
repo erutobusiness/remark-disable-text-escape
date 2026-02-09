@@ -5,12 +5,12 @@ import type { Plugin, Processor } from "unified";
 import { SKIP, visit } from "unist-util-visit";
 
 /**
- * A custom node representing a literal `[` or `*` character.
+ * A custom node representing a literal `[`, `*`, or `_` character.
  * By using a custom node type, we bypass remark-stringify's text escaping.
  */
 export interface LiteralChar extends Literal {
 	type: "literalChar";
-	value: "[" | "*";
+	value: "[" | "*" | "_";
 }
 
 declare module "mdast" {
@@ -50,13 +50,13 @@ const remarkDisableTextEscape: Plugin<[], import("mdast").Root> = function (this
 	return (tree) => {
 		visit(tree, "text", (node, index, parent) => {
 			if (index === undefined || parent === undefined) return;
-			if (!/[\[*]/.test(node.value)) return;
+			if (!/[\[*_]/.test(node.value)) return;
 
-			const parts = node.value.split(/(\[|\*)/);
+			const parts = node.value.split(/(\[|\*|_)/);
 			const newNodes: Node[] = [];
 
 			for (const part of parts) {
-				if (part === "[" || part === "*") {
+				if (part === "[" || part === "*" || part === "_") {
 					newNodes.push({ type: "literalChar", value: part } as Node);
 				} else if (part.length > 0) {
 					newNodes.push({ type: "text", value: part } as Node);
