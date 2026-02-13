@@ -29,6 +29,14 @@ declare module "mdast-util-to-markdown" {
 }
 
 /**
+ * Remove backslash escapes added by state.safe() for characters
+ * that this plugin intends to keep unescaped.
+ */
+function unescape(value: string): string {
+	return value.replace(/\\([&])/g, "$1");
+}
+
+/**
  * Get the concatenated text content of a link node's children.
  * Works with both text nodes and literalChar nodes.
  */
@@ -95,21 +103,25 @@ function linkHandler(node: Link, _: any, state: State, info: Info): string {
 		subexit = state.enter("destinationLiteral");
 		value += tracker.move("<");
 		value += tracker.move(
-			state.safe(node.url, {
-				before: value,
-				after: ">",
-				...tracker.current(),
-			}),
+			unescape(
+				state.safe(node.url, {
+					before: value,
+					after: ">",
+					...tracker.current(),
+				}),
+			),
 		);
 		value += tracker.move(">");
 	} else {
 		subexit = state.enter("destinationRaw");
 		value += tracker.move(
-			state.safe(node.url, {
-				before: value,
-				after: node.title ? " " : ")",
-				...tracker.current(),
-			}),
+			unescape(
+				state.safe(node.url, {
+					before: value,
+					after: node.title ? " " : ")",
+					...tracker.current(),
+				}),
+			),
 		);
 	}
 	subexit();
@@ -160,21 +172,25 @@ function imageHandler(node: Image, _: any, state: State, info: Info): string {
 		subexit = state.enter("destinationLiteral");
 		value += tracker.move("<");
 		value += tracker.move(
-			state.safe(node.url, {
-				before: value,
-				after: ">",
-				...tracker.current(),
-			}),
+			unescape(
+				state.safe(node.url, {
+					before: value,
+					after: ">",
+					...tracker.current(),
+				}),
+			),
 		);
 		value += tracker.move(">");
 	} else {
 		subexit = state.enter("destinationRaw");
 		value += tracker.move(
-			state.safe(node.url, {
-				before: value,
-				after: node.title ? " " : ")",
-				...tracker.current(),
-			}),
+			unescape(
+				state.safe(node.url, {
+					before: value,
+					after: node.title ? " " : ")",
+					...tracker.current(),
+				}),
+			),
 		);
 	}
 	subexit();

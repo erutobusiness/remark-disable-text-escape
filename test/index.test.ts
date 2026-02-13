@@ -132,4 +132,16 @@ describe("remark-disable-text-escape", () => {
 	it("should preserve link with title", () => {
 		expect(process('[text](url "title")')).toBe('[text](url "title")');
 	});
+
+	it("should not escape ampersands in link URLs", () => {
+		expect(process("[text](a&b)")).toBe("[text](a&b)");
+	});
+
+	it("should not escape ampersands in query strings", () => {
+		expect(process("[text](url?x=1&y=2)")).toBe("[text](url?x=1&y=2)");
+	});
+
+	it("should not escape ampersands in image URLs", () => {
+		expect(process("![alt](img?a=1&b=2)")).toBe("![alt](img?a=1&b=2)");
+	});
 });
