@@ -56,7 +56,9 @@ describe("remark-disable-text-escape", () => {
 	});
 
 	it("should handle mixed underscores, brackets, and asterisks", () => {
-		expect(process("[link] and **bold** and foo_bar_baz")).toBe("[link] and **bold** and foo_bar_baz");
+		expect(process("[link] and **bold** and foo_bar_baz")).toBe(
+			"[link] and **bold** and foo_bar_baz",
+		);
 	});
 
 	it("should not escape ampersands", () => {
