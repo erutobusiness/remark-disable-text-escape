@@ -10,7 +10,7 @@ import { SKIP, visit } from "unist-util-visit";
  */
 export interface LiteralChar extends Literal {
 	type: "literalChar";
-	value: "[" | "]" | "*" | "_" | "&" | "|" | "~" | "!";
+	value: "[" | "]" | "(" | ")" | "*" | "_" | "&" | "|" | "~" | "!";
 }
 
 declare module "mdast" {
@@ -50,13 +50,13 @@ const remarkDisableTextEscape: Plugin<[], import("mdast").Root> = function (this
 	return (tree) => {
 		visit(tree, "text", (node, index, parent) => {
 			if (index === undefined || parent === undefined) return;
-			if (!/[\[\]*_&|~!]/.test(node.value)) return;
+			if (!/[\[\]()*_&|~!]/.test(node.value)) return;
 
-			const parts = node.value.split(/([\[\]*_&|~!])/);
+			const parts = node.value.split(/([\[\]()*_&|~!])/);
 			const newNodes: Node[] = [];
 
 			for (const part of parts) {
-				if (/^[\[\]*_&|~!]$/.test(part)) {
+				if (/^[\[\]()*_&|~!]$/.test(part)) {
 					newNodes.push({ type: "literalChar", value: part } as Node);
 				} else if (part.length > 0) {
 					newNodes.push({ type: "text", value: part } as Node);

@@ -93,7 +93,15 @@ describe("remark-disable-text-escape", () => {
 		expect(process("![alt]")).toBe("![alt]");
 	});
 
+	it("should not escape parentheses", () => {
+		expect(process("foo(bar)")).toBe("foo(bar)");
+	});
+
+	it("should not escape parentheses after brackets", () => {
+		expect(process("text ](url) text")).toBe("text ](url) text");
+	});
+
 	it("should handle all special characters together", () => {
-		expect(process("[a] | b & c ~ d ! e_f *g*")).toBe("[a] | b & c ~ d ! e_f *g*");
+		expect(process("[a](b) | c & d ~ e ! f_g *h*")).toBe("[a](b) | c & d ~ e ! f_g *h*");
 	});
 });
