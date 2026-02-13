@@ -1,9 +1,19 @@
 import { remark } from "remark";
+import remarkWikiLink from "remark-wiki-link";
 import { describe, expect, it } from "vitest";
 import remarkDisableTextEscape from "../src/index.js";
 
 function process(input: string): string {
 	return remark().use(remarkDisableTextEscape).processSync(input).toString().trim();
+}
+
+function processWithWikiLink(input: string): string {
+	return remark()
+		.use(remarkWikiLink, { aliasDivider: "|" })
+		.use(remarkDisableTextEscape, { aliasDivider: "|" })
+		.processSync(input)
+		.toString()
+		.trim();
 }
 
 describe("remark-disable-text-escape", () => {
@@ -143,5 +153,17 @@ describe("remark-disable-text-escape", () => {
 
 	it("should not escape ampersands in image URLs", () => {
 		expect(process("![alt](img?a=1&b=2)")).toBe("![alt](img?a=1&b=2)");
+	});
+
+	it("should not escape underscores in wikiLink value", () => {
+		expect(processWithWikiLink("[[a_b]]")).toBe("[[a_b]]");
+	});
+
+	it("should not escape underscores in wikiLink with alias", () => {
+		expect(processWithWikiLink("[[a_b|alias]]")).toBe("[[a_b|alias]]");
+	});
+
+	it("should not escape underscores in wikiLink alias", () => {
+		expect(processWithWikiLink("[[page|a_b]]")).toBe("[[page|a_b]]");
 	});
 });

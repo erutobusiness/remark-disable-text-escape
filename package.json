@@ -1,18 +1,26 @@
 {
 	"name": "remark-disable-text-escape",
-	"version": "1.5.0",
+	"version": "1.6.0",
 	"description": "A Remark plugin to prevent special characters from being escaped by remark-stringify",
 	"type": "module",
 	"exports": "./dist/index.js",
 	"types": "./dist/index.d.ts",
-	"files": ["dist/"],
+	"files": [
+		"dist/"
+	],
 	"scripts": {
 		"build": "node node_modules/typescript/bin/tsc",
 		"test": "node node_modules/vitest/vitest.mjs run",
 		"lint": "node node_modules/@biomejs/biome/bin/biome check",
 		"prepublishOnly": "npm run build"
 	},
-	"keywords": ["remark", "remark-plugin", "markdown", "escape", "unified"],
+	"keywords": [
+		"remark",
+		"remark-plugin",
+		"markdown",
+		"escape",
+		"unified"
+	],
 	"license": "MIT",
 	"dependencies": {
 		"unist-util-visit": "^5.0.0"
@@ -26,6 +34,7 @@
 		"mdast-util-to-markdown": "^2.0.0",
 		"remark": "^15.0.0",
 		"remark-stringify": "^11.0.0",
+		"remark-wiki-link": "^2.0.1",
 		"typescript": "^5.0.0",
 		"unified": "^11.0.0",
 		"vitest": "^3.0.0"

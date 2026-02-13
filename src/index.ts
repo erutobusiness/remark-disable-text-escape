@@ -4,6 +4,10 @@ import type {} from "remark-stringify";
 import type { Plugin, Processor } from "unified";
 import { SKIP, visit } from "unist-util-visit";
 
+export interface RemarkDisableTextEscapeOptions {
+	aliasDivider?: string;
+}
+
 /**
  * A custom node representing a literal character that should not be escaped.
  * By using a custom node type, we bypass remark-stringify's text escaping.
@@ -30,9 +34,9 @@ declare module "mdast-util-to-markdown" {
 
 /**
  * Remove backslash escapes added by state.safe() for characters
- * that this plugin intends to keep unescaped.
+ * that this plugin intends to keep removeEscapesd.
  */
-function unescape(value: string): string {
+function removeEscapes(value: string): string {
 	return value.replace(/\\([&])/g, "$1");
 }
 
@@ -103,7 +107,7 @@ function linkHandler(node: Link, _: any, state: State, info: Info): string {
 		subexit = state.enter("destinationLiteral");
 		value += tracker.move("<");
 		value += tracker.move(
-			unescape(
+			removeEscapes(
 				state.safe(node.url, {
 					before: value,
 					after: ">",
@@ -115,7 +119,7 @@ function linkHandler(node: Link, _: any, state: State, info: Info): string {
 	} else {
 		subexit = state.enter("destinationRaw");
 		value += tracker.move(
-			unescape(
+			removeEscapes(
 				state.safe(node.url, {
 					before: value,
 					after: node.title ? " " : ")",
@@ -172,7 +176,7 @@ function imageHandler(node: Image, _: any, state: State, info: Info): string {
 		subexit = state.enter("destinationLiteral");
 		value += tracker.move("<");
 		value += tracker.move(
-			unescape(
+			removeEscapes(
 				state.safe(node.url, {
 					before: value,
 					after: ">",
@@ -184,7 +188,7 @@ function imageHandler(node: Image, _: any, state: State, info: Info): string {
 	} else {
 		subexit = state.enter("destinationRaw");
 		value += tracker.move(
-			unescape(
+			removeEscapes(
 				state.safe(node.url, {
 					before: value,
 					after: node.title ? " " : ")",
@@ -220,51 +224,70 @@ function imagePeek(): string {
 	return "!";
 }
 
-const toMarkdownExtension: Options = {
-	handlers: {
+function createWikiLinkHandler(aliasDivider: string) {
+	// biome-ignore lint/suspicious/noExplicitAny: wikiLink node type is defined by remark-wiki-link
+	return (node: any) => {
+		const nodeValue: string = node.value;
+		const nodeAlias: string = node.data.alias;
+		if (nodeAlias !== nodeValue) {
+			return `[[${nodeValue}${aliasDivider}${nodeAlias}]]`;
+		}
+		return `[[${nodeValue}]]`;
+	};
+}
+
+function createToMarkdownExtension(options: RemarkDisableTextEscapeOptions): Options {
+	const handlers: Record<string, unknown> = {
 		literalChar(node: LiteralChar) {
 			return node.value;
 		},
 		link: linkHandler,
 		image: imageHandler,
-	},
-};
-
-// biome-ignore lint/suspicious/noExplicitAny: peek requires assignment as a property
-(toMarkdownExtension.handlers as any).literalChar.peek = (node: LiteralChar) => node.value;
-// biome-ignore lint/suspicious/noExplicitAny: peek requires assignment as a property
-(toMarkdownExtension.handlers as any).link.peek = linkPeek;
-// biome-ignore lint/suspicious/noExplicitAny: peek requires assignment as a property
-(toMarkdownExtension.handlers as any).image.peek = imagePeek;
-
-const remarkDisableTextEscape: Plugin<[], import("mdast").Root> = function (this: Processor) {
-	const data = this.data();
-	if (!data.toMarkdownExtensions) {
-		data.toMarkdownExtensions = [];
-	}
-	const extensions = data.toMarkdownExtensions;
-	extensions.push(toMarkdownExtension);
-
-	return (tree) => {
-		visit(tree, "text", (node, index, parent) => {
-			if (index === undefined || parent === undefined) return;
-			if (!/[\[\]()*_&|~!]/.test(node.value)) return;
-
-			const parts = node.value.split(/([\[\]()*_&|~!])/);
-			const newNodes: Node[] = [];
-
-			for (const part of parts) {
-				if (/^[\[\]()*_&|~!]$/.test(part)) {
-					newNodes.push({ type: "literalChar", value: part } as Node);
-				} else if (part.length > 0) {
-					newNodes.push({ type: "text", value: part } as Node);
-				}
-			}
-
-			(parent as Parent).children.splice(index, 1, ...(newNodes as never[]));
-			return [SKIP, index + newNodes.length] as const;
-		});
+		wikiLink: createWikiLinkHandler(options.aliasDivider || "|"),
 	};
-};
+	const extension: Options = {
+		handlers: handlers as Options["handlers"],
+	};
+
+	// biome-ignore lint/suspicious/noExplicitAny: peek requires assignment as a property
+	(extension.handlers as any).literalChar.peek = (node: LiteralChar) => node.value;
+	// biome-ignore lint/suspicious/noExplicitAny: peek requires assignment as a property
+	(extension.handlers as any).link.peek = linkPeek;
+	// biome-ignore lint/suspicious/noExplicitAny: peek requires assignment as a property
+	(extension.handlers as any).image.peek = imagePeek;
+
+	return extension;
+}
+
+const remarkDisableTextEscape: Plugin<[RemarkDisableTextEscapeOptions?], import("mdast").Root> =
+	function (this: Processor, options?: RemarkDisableTextEscapeOptions) {
+		const data = this.data();
+		if (!data.toMarkdownExtensions) {
+			data.toMarkdownExtensions = [];
+		}
+		const extensions = data.toMarkdownExtensions;
+		extensions.push(createToMarkdownExtension(options || {}));
+
+		return (tree) => {
+			visit(tree, "text", (node, index, parent) => {
+				if (index === undefined || parent === undefined) return;
+				if (!/[\[\]()*_&|~!]/.test(node.value)) return;
+
+				const parts = node.value.split(/([\[\]()*_&|~!])/);
+				const newNodes: Node[] = [];
+
+				for (const part of parts) {
+					if (/^[\[\]()*_&|~!]$/.test(part)) {
+						newNodes.push({ type: "literalChar", value: part } as Node);
+					} else if (part.length > 0) {
+						newNodes.push({ type: "text", value: part } as Node);
+					}
+				}
+
+				(parent as Parent).children.splice(index, 1, ...(newNodes as never[]));
+				return [SKIP, index + newNodes.length] as const;
+			});
+		};
+	};
 
 export default remarkDisableTextEscape;
