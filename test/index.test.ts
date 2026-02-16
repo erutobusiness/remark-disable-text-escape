@@ -155,6 +155,18 @@ describe("remark-disable-text-escape", () => {
 		expect(process("![alt](img?a=1&b=2)")).toBe("![alt](img?a=1&b=2)");
 	});
 
+	it("should not escape @ in text", () => {
+		expect(process("text@text")).toBe("text@text");
+	});
+
+	it("should not escape @ with spaces", () => {
+		expect(process("A @ B")).toBe("A @ B");
+	});
+
+	it("should not escape @ in mailto link URLs", () => {
+		expect(process("[text](mailto:user@example.com)")).toBe("[text](mailto:user@example.com)");
+	});
+
 	it("should not escape underscores in wikiLink value", () => {
 		expect(processWithWikiLink("[[a_b]]")).toBe("[[a_b]]");
 	});

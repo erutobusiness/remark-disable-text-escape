@@ -8,7 +8,7 @@ A [remark](https://github.com/remarkjs/remark) plugin to prevent special charact
 
 ## Problem
 
-By default, `remark-stringify` escapes special characters in text nodes (e.g., `[` → `\[`, `*` → `\*`, `_` → `\_`, `(` → `\(`) to avoid ambiguity with Markdown syntax. This can be undesirable when you want to preserve these characters as-is in your Markdown output (e.g., `**強調**` becoming `\*\*強調\*\*` or `foo_bar_baz` becoming `foo\_bar\_baz`).
+By default, `remark-stringify` escapes special characters in text nodes (e.g., `[` → `\[`, `*` → `\*`, `_` → `\_`, `(` → `\(`, `@` → `\@`) to avoid ambiguity with Markdown syntax. This can be undesirable when you want to preserve these characters as-is in your Markdown output (e.g., `**強調**` becoming `\*\*強調\*\*` or `foo_bar_baz` becoming `foo\_bar\_baz`).
 
 Additionally:
 
@@ -90,7 +90,7 @@ console.log(String(result4));
 
 Plugin to disable escaping of special characters.
 
-All special characters (`[`, `]`, `(`, `)`, `*`, `_`, `&`, `|`, `~`, `!`) in text nodes will be preserved as-is in the output. Autolink format is preserved, and parentheses/ampersands in link/image URLs are not escaped.
+All special characters (`[`, `]`, `(`, `)`, `*`, `_`, `&`, `|`, `~`, `!`, `@`) in text nodes will be preserved as-is in the output. Autolink format is preserved, and parentheses/ampersands/at-signs in link/image URLs are not escaped.
 
 #### `options.aliasDivider`
 
@@ -120,7 +120,7 @@ import type {
 
 ## Caveats
 
-This plugin disables escaping of special characters (`[`, `]`, `(`, `)`, `*`, `_`, `&`, `|`, `~`, `!`) in **all** text nodes, and prevents escaping of parentheses and ampersands in link/image URLs.
+This plugin disables escaping of special characters (`[`, `]`, `(`, `)`, `*`, `_`, `&`, `|`, `~`, `!`, `@`) in **all** text nodes, and prevents escaping of parentheses, ampersands, and at-signs in link/image URLs.
 If the output Markdown is later re-parsed, unescaped characters may be interpreted as Markdown syntax, changing the document semantics.
 Use this plugin only when you control the final output and do not expect round-trip fidelity.
 
