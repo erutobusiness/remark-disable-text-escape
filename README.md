@@ -1,8 +1,8 @@
 # remark-disable-text-escape
 
-[![npm version](https://img.shields.io/npm/v/remark-disable-text-escape.svg)](https://www.npmjs.com/package/remark-disable-text-escape)
-[![npm downloads](https://img.shields.io/npm/dm/remark-disable-text-escape.svg)](https://www.npmjs.com/package/remark-disable-text-escape)
-[![license](https://img.shields.io/npm/l/remark-disable-text-escape.svg)](https://github.com/erutobusiness/remark-disable-text-escape/blob/main/LICENSE)
+[![npm](https://img.shields.io/npm/v/remark-disable-text-escape.svg)](https://www.npmjs.com/package/remark-disable-text-escape)
+[![test](https://github.com/erutobusiness/remark-disable-text-escape/actions/workflows/ci.yml/badge.svg)](https://github.com/erutobusiness/remark-disable-text-escape/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A [remark](https://github.com/remarkjs/remark) plugin to prevent special characters from being escaped by [remark-stringify](https://github.com/remarkjs/remark/tree/main/packages/remark-stringify).
 
@@ -28,7 +28,7 @@ This plugin works in three ways:
 
 ## Install
 
-This package is [ESM only](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c). Node.js 16+ is required.
+This package is [ESM only](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c). Node.js 18+ is required.
 
 ```bash
 npm install remark-disable-text-escape
@@ -113,7 +113,7 @@ import type {
 
 ## Compatibility
 
-- Node.js 16+
+- Node.js 18+
 - `remark-stringify` ^11.0.0 (peer dependency)
 - `remark-wiki-link` ^2.0.0 (optional — wikiLink handler is only active when this plugin is used)
 - ESM only — cannot be `require()`'d
@@ -124,6 +124,24 @@ This plugin disables escaping of special characters (`[`, `]`, `(`, `)`, `*`, `_
 If the output Markdown is later re-parsed, unescaped characters may be interpreted as Markdown syntax, changing the document semantics.
 Use this plugin only when you control the final output and do not expect round-trip fidelity.
 
+## Development
+
+1.  Clone the repository:
+    ```bash
+    git clone https://github.com/erutobusiness/remark-disable-text-escape.git
+    cd remark-disable-text-escape
+    ```
+2.  Install dependencies:
+    ```bash
+    npm install
+    ```
+3.  Run build, tests & lint:
+    ```bash
+    npm run build
+    npm test
+    npm run lint
+    ```
+
 ## License
 
-[MIT](LICENSE)
+MIT © [erutobusiness](https://github.com/erutobusiness)
