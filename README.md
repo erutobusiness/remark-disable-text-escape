@@ -1,7 +1,7 @@
 # remark-disable-text-escape
 
 [![npm](https://img.shields.io/npm/v/remark-disable-text-escape.svg)](https://www.npmjs.com/package/remark-disable-text-escape)
-[![test](https://github.com/erutobusiness/remark-disable-text-escape/actions/workflows/ci.yml/badge.svg)](https://github.com/erutobusiness/remark-disable-text-escape/actions/workflows/ci.yml)
+[![test](https://github.com/eruto-lint/remark-disable-text-escape/actions/workflows/ci.yml/badge.svg)](https://github.com/eruto-lint/remark-disable-text-escape/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A [remark](https://github.com/remarkjs/remark) plugin to prevent special characters from being escaped by [remark-stringify](https://github.com/remarkjs/remark/tree/main/packages/remark-stringify).
